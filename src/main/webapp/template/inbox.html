@@ -1,0 +1,8 @@
+<div ng-init="init()">
+<h1>Inbox</h1>
+<div ng-repeat="taskItem in taskList">
+    <div>
+    	<a ng-href="#/processes/registration?taskId={{taskItem}}">{{taskItem}}</a>
+    </div>
+</div>
+</div>

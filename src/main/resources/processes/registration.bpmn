@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://activiti.org/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://activiti.org/bpmn20" id="business-processes" name="">
+  <process id="registration" name="registration" isExecutable="true" isClosed="false" processType="None">
+    <startEvent id="start" name="Start" activiti:formKey="za/co/trikwetra/process/registration/start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="printStart"></sequenceFlow>
+    <scriptTask id="printStart" name="printStart" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>print('event:start');
+print(execution.getVariable('data').firstName); print(execution.getVariable('data').lastName);
+print(execution.getVariable('data').email);
+print(execution.getVariable('data').password);
+print(execution.getVariable('data').decision);
+print(execution.getVariable('data').otp);
+		  </script>
+    </scriptTask>
+    <sequenceFlow id="flow2" sourceRef="printStart" targetRef="review"></sequenceFlow>
+    <userTask id="review" name="Review" activiti:formKey="registration/review"></userTask>
+    <sequenceFlow id="flow3" sourceRef="review" targetRef="printReview"></sequenceFlow>
+    <scriptTask id="printReview" name="printReview" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>
+		     print('event:review');
+		  	 print(execution.getVariable('data').firstName);
+		  	 print(execution.getVariable('data').lastName);
+		  	 print(execution.getVariable('data').email);
+		  	 print(execution.getVariable('data').password);
+		  	 print(execution.getVariable('data').decision);
+		  	 print(execution.getVariable('data').otp);
+		  </script>
+    </scriptTask>
+    <sequenceFlow id="flow4" sourceRef="printReview" targetRef="verify"></sequenceFlow>
+    <userTask id="verify" name="Verify" activiti:formKey="registration/verify"></userTask>
+    <sequenceFlow id="flow5" sourceRef="verify" targetRef="printVerify"></sequenceFlow>
+    <scriptTask id="printVerify" name="printVerify" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>
+		     print('event:verify');
+		  	 print(execution.getVariable('data').firstName);
+		  	 print(execution.getVariable('data').lastName);
+		  	 print(execution.getVariable('data').email);
+		  	 print(execution.getVariable('data').password);
+		  	 print(execution.getVariable('data').decision);
+		  	 print(execution.getVariable('data').otp);
+		  </script>
+    </scriptTask>
+    <sequenceFlow id="flow6" sourceRef="printVerify" targetRef="end"></sequenceFlow>
+    <endEvent id="end"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_registration">
+    <bpmndi:BPMNPlane bpmnElement="registration" id="BPMNPlane_registration">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="printStart" id="BPMNShape_printStart">
+        <omgdc:Bounds height="55.0" width="85.0" x="110.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="review" id="BPMNShape_review">
+        <omgdc:Bounds height="55.0" width="85.0" x="225.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="printReview" id="BPMNShape_printReview">
+        <omgdc:Bounds height="55.0" width="85.0" x="350.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="verify" id="BPMNShape_verify">
+        <omgdc:Bounds height="55.0" width="85.0" x="525.0" y="250.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="printVerify" id="BPMNShape_printVerify">
+        <omgdc:Bounds height="55.0" width="85.0" x="635.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="805.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="37.0" y="240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="152.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="152.0" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="267.0" y="235.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="267.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="392.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="392.0" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="567.0" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="567.0" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="677.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="677.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="822.0" y="270.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

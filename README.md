@@ -1,0 +1,1 @@
+jre/lib/jaxp.properties > javax.xml.accessExternalSchema = all

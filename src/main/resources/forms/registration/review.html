@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Review Registration</h2>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input id="firstName" ng-model="formData.firstName" class="form-control" placeholder="Enter Firstname" disabled="true"/>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input id="lastName" ng-model="formData.lastName" class="form-control" placeholder="Enter Lastname" disabled="true"/>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input id="email" ng-model="formData.email" class="form-control" placeholder="Enter Email" disabled="true"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="decision">Decision *</label>
+                    <select id="decision" ng-model="formData.decision" class="form-control">
+                        <option value="">Select Accept/Reject</option>
+                        <option value="accept">Accept</option>
+                        <option value="reject">Reject</option>
+                    </select>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+
+            <button class="btn btn-info" ng-click="submitForm()">Submit</button>
+            <hr></hr>
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://trikwetra.co.za/identity"
+	xmlns:tns="http://trikwetra.co.za/identity"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.1"
+    elementFormDefault="qualified">
+    
+
+	<element name="userQueryMultiple">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="firstName" type="string"/>
+				<element name="lastName"  type="string"/>
+				<element name="email"     type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="userQuerySingle">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="firstName" type="string"/>
+				<element name="lastName"  type="string"/>
+				<element name="email"     type="string"/>
+				<element name="groups" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<sequence>
+							<element name="id" type="string"/>
+							<element name="name" type="string"/>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="userCommandCreate">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="firstName" type="string"/>
+				<element name="lastName"  type="string"/>
+				<element name="email"     type="string"/>
+				<element name="password"  type="string"/>
+			</sequence>
+		</complexType>	
+	</element>
+	
+	
+	<element name="userCommandUpdate">
+		<complexType>
+			<sequence>
+				<element name="firstName" type="string"/>
+				<element name="lastName"  type="string"/>
+				<element name="email"     type="string"/>
+				<element name="password"  type="string"/>
+			</sequence>
+		</complexType>	
+	</element>
+	
+	<element name="groupQueryMultiple">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="name" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="groupQuerySingle">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="name" type="string"/>
+				<element name="type"  type="string"/>
+				<element name="users" minOccurs="0"  maxOccurs="unbounded">
+					<complexType>
+						<sequence>
+							<element name="id" type="string" />
+							<element name="firstName" type="string" />
+							<element name="lastName" type="string" />
+							<element name="email" type="string" />
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	
+	
+	<element name="groupCommandCreate">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="name" type="string"/>
+				<element name="type"  type="string"/>
+			</sequence>
+		</complexType>	
+	</element>
+	
+	<element name="groupCommandUpdate">
+		<complexType>
+			<sequence>
+				<element name="name" type="string"/>
+				<element name="type"  type="string"/>
+			</sequence>
+		</complexType>	
+	</element>	
+	
+</schema>
