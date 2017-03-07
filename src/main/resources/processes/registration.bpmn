@@ -5,7 +5,8 @@
     <sequenceFlow id="flow1" sourceRef="start" targetRef="printStart"></sequenceFlow>
     <scriptTask id="printStart" name="printStart" scriptFormat="javascript" activiti:autoStoreVariables="false">
       <script>print('event:start');
-print(execution.getVariable('data').firstName); print(execution.getVariable('data').lastName);
+print(execution.getVariable('data').firstName); 
+print(execution.getVariable('data').lastName);
 print(execution.getVariable('data').email);
 print(execution.getVariable('data').password);
 print(execution.getVariable('data').decision);

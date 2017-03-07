@@ -1,16 +1,11 @@
-package za.co.trikewetra;
+package za.co.trikewetra.process.generic;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,24 +25,14 @@ import za.co.trikwetra.identity.UserQuerySingle;
 
 
 @RestController
-public class Service {
+public class IdentityController {
 	
-	@Autowired
-	private RuntimeService runtimeService;
-	
-	@Autowired
-	TaskService taskService;
-	
-	@Autowired
-	FormService formService;
 	
 	@Autowired
 	IdentityService identityService;
 	
 	@Autowired
 	ModelMapper mapper;
-	
-	ProcessInstance pi;
 	
 	
 	@RequestMapping(path="api/users", method=RequestMethod.GET, produces="application/json")
@@ -144,5 +129,5 @@ public class Service {
 		}
 		return response;
 	}
-	
+
 }

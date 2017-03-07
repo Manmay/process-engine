@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequestMapping("api")
 public class TaskController {
 	
 	@Autowired
@@ -61,7 +62,7 @@ public class TaskController {
 	public void completeTask(@PathVariable("processName") String processName, @RequestBody Object formData, @RequestParam(value="taskId", required=false) String taskId) throws ClassNotFoundException{
 		Map<String, Object> processVariables = new HashMap<String, Object>();
 		if(taskId == null){
-			System.out.println("Insert Process Data");
+			System.out.println("Insert Process Data : " +  formData);
 			Object startData = mapper.map(formData,  Class.forName("processes." + processName + ".Start"));
 			Object processData = mapper.map(startData, Class.forName("processes." + processName + ".Data"));
 			processVariables.put("data", processData);
