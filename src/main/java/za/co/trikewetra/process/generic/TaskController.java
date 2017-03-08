@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,9 @@ public class TaskController {
 	
 	@Autowired
 	RuntimeService runtimeService;
+	
+	@Autowired
+	HistoryService historyService;
 		
 	@Autowired
 	ModelMapper mapper;
@@ -60,6 +67,7 @@ public class TaskController {
 
 	@RequestMapping(path="processes/{processName}/data", method=RequestMethod.POST, consumes="application/json")
 	public void completeTask(@PathVariable("processName") String processName, @RequestBody Object formData, @RequestParam(value="taskId", required=false) String taskId) throws ClassNotFoundException{
+		String reference = System.currentTimeMillis();
 		Map<String, Object> processVariables = new HashMap<String, Object>();
 		if(taskId == null){
 			System.out.println("Insert Process Data : " +  formData);
@@ -78,17 +86,40 @@ public class TaskController {
 		}
 	}
 
-	@RequestMapping(path="processes/{processName}/list", method=RequestMethod.GET, produces="application/json")
-	public List<String> listTasks(){
-		String user = "kermit";
-		System.out.println(user);
-		List<Task> tasks = taskService.createTaskQuery().taskAssignee(user).list();
-		List<String> taskList = new ArrayList<String>();
+	@RequestMapping(path="users/{userId}/tasks", method=RequestMethod.GET, produces="application/json")
+	public void listTasks(@PathVariable("userId") String userId){
+		System.out.println(userId);
+		List<Task> tasks = taskService.createTaskQuery().taskAssignee(userId).list();
 		for(Task task : tasks){
-			taskList.add(task.getId());
-			System.out.println(task.getProcessDefinitionId());
+			System.out.println("----------------------------");
+			System.out.println(task.getId());;
+			System.out.println(task.getName());;
+			System.out.println(task.getProcessDefinitionId());;
+			System.out.println(task.getFormKey());
+			System.out.println(task.getDescription());
+			System.out.println(task.getProcessInstanceId());
+			System.out.println(task.getTaskDefinitionKey());
+			System.out.println(task.getExecutionId());
 		}
-		return taskList;
+		//return tasks;		
+	}
+	
+	@RequestMapping(path = "processes/{processId}/currentTask", method=RequestMethod.GET)
+	public String getCurrentTask(@PathVariable("processId") String processId){
+		 List<HistoricActivityInstance> hts = historyService.createHistoricActivityInstanceQuery().processInstanceId(processId).list();
+		 for(HistoricActivityInstance ht : hts){
+			 System.out.println(ht.getProcessDefinitionId());
+			 System.out.println(ht.getActivityName());
+			 System.out.println(ht.getAssignee());
+		 }
+		return "";
+	}
+	
+	
+	public void findProcess(String reference){
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery().includeProcessVariables().variableValueEquals("reference", reference).singleResult();
+		System.out.println(pi.getId());
+		System.out.println(pi.getName());
 	}
 
 }

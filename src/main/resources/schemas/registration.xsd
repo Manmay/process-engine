@@ -33,14 +33,7 @@
    <element name="review">
 		<complexType>
 			<sequence>
-				<element name="firstName" type="string">
-					<annotation>
-                    	<appinfo>
-                        	<jaxb:property name="_physicians"/>
-                       
-                    	</appinfo>
-                	</annotation>
-				</element>
+				<element name="firstName" type="string"/>
 				<element name="lastName"  type="string"/>
 				<element name="email"     type="string"/>
 				<element name="decision"  type="string"/>
