@@ -67,12 +67,15 @@ public class TaskController {
 
 	@RequestMapping(path="processes/{processName}/data", method=RequestMethod.POST, consumes="application/json")
 	public void completeTask(@PathVariable("processName") String processName, @RequestBody Object formData, @RequestParam(value="taskId", required=false) String taskId) throws ClassNotFoundException{
-		String reference = System.currentTimeMillis();
+		
 		Map<String, Object> processVariables = new HashMap<String, Object>();
 		if(taskId == null){
 			System.out.println("Insert Process Data : " +  formData);
+			String reference = "#"+System.currentTimeMillis();
+			System.out.println(reference);
 			Object startData = mapper.map(formData,  Class.forName("processes." + processName + ".Start"));
 			Object processData = mapper.map(startData, Class.forName("processes." + processName + ".Data"));
+			processVariables.put("ref", reference);
 			processVariables.put("data", processData);
 			runtimeService.startProcessInstanceByKey(processName, processVariables);
 		} else {
@@ -116,10 +119,12 @@ public class TaskController {
 	}
 	
 	
-	public void findProcess(String reference){
-		ProcessInstance pi = runtimeService.createProcessInstanceQuery().includeProcessVariables().variableValueEquals("reference", reference).singleResult();
+	@RequestMapping(path = "processes/reference/{reference}", method=RequestMethod.GET)
+	public void findProcess(@PathVariable("reference") String reference){
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery().includeProcessVariables().variableValueEquals("ref", reference).singleResult();
 		System.out.println(pi.getId());
 		System.out.println(pi.getName());
+		System.out.println(pi.getProcessDefinitionKey());
 	}
 
 }
