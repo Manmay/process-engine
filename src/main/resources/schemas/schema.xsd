@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://trikwetra.co.za/schema" 
+	xmlns:tns="http://trikwetra.co.za/schema" 
+	elementFormDefault="qualified">
+	
+	<element name="TaskQueryMultiple">
+		<complexType>
+			<sequence>
+				<element name="id" type="string"/>
+				<element name="key" type="string" />
+				<element name="name" type="string"/>
+				<element name="description" type="string"/>
+				<element name="process" type="string"/>
+				<element name="form" type="anyURI"/>
+				<element name="assignee" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+</schema>

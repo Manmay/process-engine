@@ -1,0 +1,36 @@
+<div ng-init="init()" class="container">
+<div class="row">
+	<div class="col-md-12">
+		<h1>Tasks</h1>
+		<hr>
+	</div>
+</div>
+
+<div ng-repeat="task in taskList" class="row">
+   <div class="col-md-12">
+   		<div>
+   			<h3>{{task.process}}</h1>
+   			<h5>{{task.key}}</h5>
+   			<p>{{task.description}}</p>
+   		
+   			<div ng-if="task.assignee">
+   				<a ng-href="#{{task.form}}">Open</a>
+   			</div>
+   			<div ng-if="!task.assignee">
+   				<a ng-href="#{{task.form}}">Claim</a>
+   			</div>
+   			
+   			<hr>
+   		</div>
+   </div>
+    <!-- <div class="col-md-1">{{task.id}}</div>
+    <div class="col-md-1">{{task.key}}</div>
+    <div class="col-md-2">{{task.name}}</div>
+    <div class="col-md-2">{{task.process}}</div>
+    <div class="col-md-4">{{task.description}}</div>
+    <div class="col-md-2">
+    	<a ng-href="#{{task.form}}">Open</a>
+    </div>-->
+    
+</div>
+</div>

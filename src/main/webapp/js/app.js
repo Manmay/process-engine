@@ -3,15 +3,23 @@ var app = angular.module("app", ["ngRoute"]);
 app.config(function($routeProvider) {
     $routeProvider
     	.when("/home", {
-	        templateUrl : "template/home.html"
-	    })
-	    .when("/inbox", {
-	        templateUrl : "template/inbox.html",
-	        controller: "InboxCtrl"
+	        templateUrl : "templates/home.html"
 	    })
 	    .when("/processes/:processName", {
-	    	templateUrl: "template/task.html",
+	    	templateUrl: "templates/task.html",
 	    	controller: "TaskCtrl"
+	    })
+	    .when("/tasks", {
+	        templateUrl : "templates/tasks.html",
+	        controller: "TasksCtrl"
+	    })
+	    .when("/tasks/registration/review/:taskId", {
+	    	templateUrl: "templates/registration/review.html",
+	    	controller: "RegistrationReviewCtrl"
+	    })
+	    .when("/tasks/registration/verify/:taskId", {
+	    	templateUrl: "templates/registration/verify.html",
+	    	controller: "RegistrationVerifyCtrl"
 	    })
 	    .otherwise("/home");
 });
@@ -67,11 +75,11 @@ app.controller('TaskCtrl', function($scope, $routeParams, $http) {
 });
 
 
-app.controller('InboxCtrl', function($scope, $http) {
+app.controller('TasksCtrl', function($scope, $http) {
 	
 	 $scope.init = function(){
 		 $http({
-				url: '/api/tasks',
+				url: '/api/users/mrunmay/tasks',
 				method: "GET",
 				headers: {
 					'Accept': 'application/json'
@@ -85,4 +93,6 @@ app.controller('InboxCtrl', function($scope, $http) {
 	 };	 
 	 
 });
+
+
 

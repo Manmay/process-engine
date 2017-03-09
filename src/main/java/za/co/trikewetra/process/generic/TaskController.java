@@ -13,7 +13,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.modelmapper.ModelMapper;
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import za.co.trikwetra.schema.TaskQueryMultiple;
 
 
 @RestController
@@ -90,22 +91,26 @@ public class TaskController {
 	}
 
 	@RequestMapping(path="users/{userId}/tasks", method=RequestMethod.GET, produces="application/json")
-	public void listTasks(@PathVariable("userId") String userId){
-		System.out.println(userId);
-		List<Task> tasks = taskService.createTaskQuery().taskAssignee(userId).list();
+	public List<TaskQueryMultiple> getTasks(@PathVariable("userId") String userId){
+		List<TaskQueryMultiple> response = new ArrayList<TaskQueryMultiple>(); 
+		List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userId).list();
+		System.out.println(tasks.size());
 		for(Task task : tasks){
-			System.out.println("----------------------------");
-			System.out.println(task.getId());;
-			System.out.println(task.getName());;
-			System.out.println(task.getProcessDefinitionId());;
-			System.out.println(task.getFormKey());
-			System.out.println(task.getDescription());
-			System.out.println(task.getProcessInstanceId());
-			System.out.println(task.getTaskDefinitionKey());
-			System.out.println(task.getExecutionId());
+			String key = runtimeService.getVariables(task.getProcessInstanceId()).get("ref").toString();
+			TaskQueryMultiple aTask = new TaskQueryMultiple();
+			aTask.setKey(key);
+			aTask.setId(task.getId());
+			aTask.setName(task.getName());
+			aTask.setDescription(task.getDescription());
+			aTask.setProcess(task.getProcessDefinitionId());
+			aTask.setForm(task.getFormKey() + "/" + aTask.getId());
+		    aTask.setAssignee(task.getAssignee());
+			response.add(aTask);
 		}
-		//return tasks;		
+		return response;		
 	}
+	
+	
 	
 	@RequestMapping(path = "processes/{processId}/currentTask", method=RequestMethod.GET)
 	public String getCurrentTask(@PathVariable("processId") String processId){
