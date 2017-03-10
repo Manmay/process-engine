@@ -20,8 +20,8 @@ app.controller("RegistrationReviewCtrl", function($scope, $routeParams, $http, $
 	
 	$scope.claim = function(){
 		$http({
-			url: '/api/tasks/' + $routeParams.taskId + '/claim?userId=' + $routeParams['userId'],
-			method: "GET"
+			url: '/api/tasks/' + $routeParams.taskId + '?userId=' + $routeParams['userId'],
+			method: "PATCH"
 		}).success(function(data, status){
 			console.log("success!!!");
 			$scope.task.assignee = $routeParams['userId'];

@@ -133,15 +133,20 @@ public class TaskController {
 		this.taskService.claim(taskId, userId);
 	}
 	
+	
 	@RequestMapping(path="tasks/{taskId}", method=RequestMethod.POST, consumes="application/json")
 	public void completeTask(@PathVariable("taskId") String taskId, @RequestBody String request, @RequestParam("userId") String userId) throws ClassNotFoundException{
-		Map<String, Object> processVariables = new HashMap<String, Object>();
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		Object processData =  runtimeService.getVariables(task.getProcessInstanceId()).get("data");
-		Object stepData = mapper.map(request,  Class.forName("processes." + task.getProcessDefinitionId().split(":")[0] + "." + task.getName()));
-	    mapper.map(stepData, processData);
-		processVariables.put("data", processData);
-		taskService.complete(taskId, processVariables);
+		if(task.getAssignee().equals(userId)){
+			Map<String, Object> processVariables = new HashMap<String, Object>();
+			Object processData =  runtimeService.getVariables(task.getProcessInstanceId()).get("data");
+			Object stepData = mapper.map(request,  Class.forName("processes." + task.getProcessDefinitionId().split(":")[0] + "." + task.getName()));
+		    mapper.map(stepData, processData);
+			processVariables.put("data", processData);
+			taskService.complete(taskId, processVariables);
+		} else {
+			throw new RuntimeException("Not Allowed");
+		}
 	}
 	
 	
