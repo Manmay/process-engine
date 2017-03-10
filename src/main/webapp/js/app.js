@@ -75,11 +75,15 @@ app.controller('TaskCtrl', function($scope, $routeParams, $http) {
 });
 
 
-app.controller('TasksCtrl', function($scope, $http) {
+app.controller('TasksCtrl', function($scope, $http, $routeParams) {
+	
+	 $scope.userId ;
 	
 	 $scope.init = function(){
+		 $scope.userId = $routeParams['userId'];
+		 
 		 $http({
-				url: '/api/users/mrunmay/tasks',
+				url: '/api/tasks' + '?userId=' + $scope.userId,
 				method: "GET",
 				headers: {
 					'Accept': 'application/json'

@@ -10,22 +10,24 @@
     		<form>
     			<div class="form-group">
     				<label for="firstName">First Name</label>
-    				<input ng-model="data.firstName" id="firstName" class="form-control" disabled>
+    				<input ng-model="task.data.firstName" id="firstName" class="form-control" disabled>
     			</div>
     			<div class="form-group">
     				<label for="lasttName">First Name</label>
-    				<input ng-model="data.lastName" id="lastName" class="form-control" disabled>
+    				<input ng-model="task.data.lastName" id="lastName" class="form-control" disabled>
     			</div>
     			<div class="form-group">
     				<label for="email">Email</label>
-    				<input ng-model="data.email" id="email" class="form-control" disabled>
+    				<input ng-model="task.data.email" id="email" class="form-control" disabled>
     			</div>
     			<div class="form-group">
     				<label for="decision">Decision *</label>
-    				<input ng-model="data.decision" id="decision" class="form-control" placeholder="Enter Your Decision">
+    				<input ng-model="task.data.decision" id="decision" class="form-control" placeholder="Enter Your Decision" ng-disabled="!task.assignee">
     			</div>
+    			
     			<div class="form-group text-right">
-    				<button class="btn btn-danger" ng-click="submit()">Submit</button>
+    				<button class="btn btn-danger" ng-click="submit()" ng-if="task.assignee">Complete</button>
+    				<button class="btn btn-danger" ng-click="claim()" ng-if="!task.assignee">Claim</button>
     			</div>
     		</form>
     	</div>

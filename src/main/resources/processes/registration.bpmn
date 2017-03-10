@@ -14,8 +14,8 @@ print(execution.getVariable('data').otp);
 		  </script>
     </scriptTask>
     <sequenceFlow id="flow2" sourceRef="printStart" targetRef="review"></sequenceFlow>
-    <userTask id="review" name="Review" activiti:formKey="/tasks/registration/review"  activiti:assignee="${data.email}">
-      <documentation>Please Review Request.</documentation>
+    <userTask id="review" name="Review" activiti:formKey="/tasks/registration/review"  activiti:candidateGroups="broker">
+      <documentation>${reference}|Please Review Request.</documentation>
     </userTask>
     <sequenceFlow id="flow3" sourceRef="review" targetRef="printReview"></sequenceFlow>
     <scriptTask id="printReview" name="printReview" scriptFormat="javascript" activiti:autoStoreVariables="false">
@@ -31,7 +31,7 @@ print(execution.getVariable('data').otp);
     </scriptTask>
     <sequenceFlow id="flow4" sourceRef="printReview" targetRef="verify"></sequenceFlow>
     <userTask id="verify" name="Verify" activiti:formKey="tasks/registration/verify">
-    	<documentation>Please Approve Request</documentation>
+    	<documentation>${reference}|Please Approve Request</documentation>
       	<humanPerformer>
         	<resourceAssignmentExpression>
           		<formalExpression>mrunmay</formalExpression>
