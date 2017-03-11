@@ -30,9 +30,25 @@ app.controller("RegistrationReviewCtrl", function($scope, $routeParams, $http, $
 		});
 	};
 	
+	$scope.save = function(){
+		$http({
+			url: '/api/tasks/' + $routeParams.taskId + "?userId=" + $routeParams['userId'],
+			method: "PUT",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			data: $scope.task.data
+		}).success(function(data, status){
+			console.log("success!!!");
+			$location.path("/tasks");
+		}).error(function(error){
+			console.log("error");
+		});
+	};
+	
 	$scope.submit = function(){
 		$http({
-			url: '/api/processes/registration/data?taskId=' + $routeParams.taskId,
+			url: '/api/tasks/' + $routeParams.taskId + "?userId=" + $routeParams['userId'],
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'

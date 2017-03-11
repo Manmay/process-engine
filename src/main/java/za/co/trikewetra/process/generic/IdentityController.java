@@ -129,5 +129,34 @@ public class IdentityController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(path = "api/prepare", method=RequestMethod.GET)
+	public void prepare(){
+		GroupCommandCreate group = new GroupCommandCreate();
+		group.setId("broker");
+		group.setName("Broker");
+		group.setType("user");
+		this.createGroup(group);
+		
+		UserCommandCreate user1 = new UserCommandCreate();
+		user1.setId("manmay");
+		user1.setFirstName("Manmay");
+		user1.setLastName("Mohanty");
+		user1.setEmail("manmay@gmail.com");
+		user1.setPassword("secret");
+		this.createUser(user1);
+		
+		UserCommandCreate user2 = new UserCommandCreate();
+		user2.setId("mrunmay");
+		user2.setFirstName("Mrunmay");
+		user2.setLastName("Mohanty");
+		user2.setEmail("manmay@gmail.com");
+		user2.setPassword("secret");
+		this.createUser(user2);
+		
+		this.createMemebership("manmay", new String[]{"broker"});
+		this.createMemebership("mrunmay", new String[]{"broker"});
+		
+	}
 
 }

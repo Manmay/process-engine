@@ -1,7 +1,6 @@
 package za.co.trikewetra.process.generic;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.modelmapper.ModelMapper;
@@ -50,47 +48,23 @@ public class TaskController {
 	@Autowired
 	ModelMapper mapper;
 	
-
-//	@RequestMapping(path="processes/{processName}/data", method=RequestMethod.GET, produces="application/json")
-//	public Object fetchTask(@PathVariable("processName") String processName, @RequestParam(value="taskId", required=false) String taskId) throws IOException, ClassNotFoundException {
-//		Object formData =  null;
-//		if(taskId == null){
-//			formData = new HashMap<String, Object>();
-//		} else {
-//			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-//			Object processData = runtimeService.getVariables(task.getProcessInstanceId()).get("data");
-//			System.out.println("processes." + processName + "." + task.getName());
-//			formData = mapper.map(processData, Class.forName("processes." + processName + "." + task.getName()));					
-//		}
-//		return formData;
-//	}
-//	
 	
-
-	@RequestMapping(path="processes/{processName}/data", method=RequestMethod.POST, consumes="application/json")
-	public void completeTask(@PathVariable("processName") String processName, @RequestBody Object formData, @RequestParam(value="taskId", required=false) String taskId) throws ClassNotFoundException{
-		
+	@RequestMapping(path="processes/{process}", method=RequestMethod.POST, consumes="application/json")
+	public void startProcess(@PathVariable("process") String process, @RequestBody Object request) throws ClassNotFoundException{
 		Map<String, Object> processVariables = new HashMap<String, Object>();
-		if(taskId == null){
-			System.out.println("Insert Process Data : " +  formData);
-			String reference = "#"+System.currentTimeMillis();
-			System.out.println(reference);
-			Object startData = mapper.map(formData,  Class.forName("processes." + processName + ".Start"));
-			Object processData = mapper.map(startData, Class.forName("processes." + processName + ".Data"));
-			processVariables.put("reference", reference);
-			processVariables.put("data", processData);
-			runtimeService.startProcessInstanceByKey(processName, processVariables);
-		} else {
-			System.out.println("Update Process Data");
-			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-			Object processData =  runtimeService.getVariables(task.getProcessInstanceId()).get("data");
-			Object stepData = mapper.map(formData,  Class.forName("processes." + processName + "." + task.getName()));
-		    mapper.map(stepData, processData);
-			processVariables.put("data", processData);
-			taskService.complete(taskId, processVariables);
-		}
+		Object startData = mapper.map(request,  Class.forName("processes." + process + ".Start"));
+		Object processData = mapper.map(startData, Class.forName("processes." + process + ".Data"));
+		processVariables.put("reference", "#"+System.currentTimeMillis());
+		processVariables.put("data", processData);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(process, processVariables);
+		System.out.println(processInstance.getId() + " : Process Started");
 	}
 	
+	
+	@RequestMapping(path="processes/{processId}", method=RequestMethod.GET)
+	public Object getProcessData(@PathVariable("processId") String processId){
+		return runtimeService.getVariables(processId);
+	}
 	
 
 	@RequestMapping(path="tasks", method=RequestMethod.GET, produces="application/json")
@@ -114,8 +88,16 @@ public class TaskController {
 	
 	@RequestMapping(path="tasks/{taskId}", method=RequestMethod.GET, produces="application/json")
 	public TaskQuerySingle getTask(@PathVariable("taskId") String taskId, @RequestParam("userId") String userId) throws ClassNotFoundException{
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		Object processData = runtimeService.getVariables(task.getProcessInstanceId()).get("data");
+		Task task = taskService.createTaskQuery().taskId(taskId).includeProcessVariables().includeTaskLocalVariables().singleResult();
+		Object processData = new HashMap<String, Object>();
+		if(task.getTaskLocalVariables().get("data") != null){
+			processData = task.getTaskLocalVariables().get("data");
+			System.out.println("Sending Local Variables");
+		}else {
+			processData = task.getProcessVariables().get("data");
+			System.out.println("Sending Global Variables");
+		}
+	    System.out.println(processData);
 		Object formData = mapper.map(processData, Class.forName("processes." + task.getProcessDefinitionId().split(":")[0] + "." + task.getName()));
 		TaskQuerySingle response = new TaskQuerySingle();
 		response.setId(task.getId());
@@ -133,15 +115,16 @@ public class TaskController {
 		this.taskService.claim(taskId, userId);
 	}
 	
-	
 	@RequestMapping(path="tasks/{taskId}", method=RequestMethod.POST, consumes="application/json")
-	public void completeTask(@PathVariable("taskId") String taskId, @RequestBody String request, @RequestParam("userId") String userId) throws ClassNotFoundException{
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+	public void completeTask(@PathVariable("taskId") String taskId, @RequestBody Object request, @RequestParam("userId") String userId) throws ClassNotFoundException{
+		Task task = taskService.createTaskQuery().taskId(taskId).includeProcessVariables().includeTaskLocalVariables().singleResult();
 		if(task.getAssignee().equals(userId)){
-			Map<String, Object> processVariables = new HashMap<String, Object>();
-			Object processData =  runtimeService.getVariables(task.getProcessInstanceId()).get("data");
-			Object stepData = mapper.map(request,  Class.forName("processes." + task.getProcessDefinitionId().split(":")[0] + "." + task.getName()));
-		    mapper.map(stepData, processData);
+			Map<String, Object> processVariables = task.getProcessVariables();
+			Object processData = processVariables.get("data");
+			Object requestData = mapper.map(request, Class.forName("processes." + task.getProcessDefinitionId().split(":")[0] + "." + task.getName()));
+			System.out.println(processData.getClass().getName());
+			System.out.println(requestData.getClass().getName());
+		    mapper.map(requestData, processData);
 			processVariables.put("data", processData);
 			taskService.complete(taskId, processVariables);
 		} else {
@@ -150,25 +133,17 @@ public class TaskController {
 	}
 	
 	
-	
-//	@RequestMapping(path = "processes/{processId}/currentTask", method=RequestMethod.GET)
-//	public String getCurrentTask(@PathVariable("processId") String processId){
-//		 List<HistoricActivityInstance> hts = historyService.createHistoricActivityInstanceQuery().processInstanceId(processId).list();
-//		 for(HistoricActivityInstance ht : hts){
-//			 System.out.println(ht.getProcessDefinitionId());
-//			 System.out.println(ht.getActivityName());
-//			 System.out.println(ht.getAssignee());
-//		 }
-//		return "";
-//	}
-//	
-//	
-//	@RequestMapping(path = "processes/reference/{reference}", method=RequestMethod.GET)
-//	public void findProcess(@PathVariable("reference") String reference){
-//		ProcessInstance pi = runtimeService.createProcessInstanceQuery().includeProcessVariables().variableValueEquals("ref", reference).singleResult();
-//		System.out.println(pi.getId());
-//		System.out.println(pi.getName());
-//		System.out.println(pi.getProcessDefinitionKey());
-//	}
+	@RequestMapping(path="tasks/{taskId}", method=RequestMethod.PUT, consumes="application/json")
+	public void saveTask(@PathVariable("taskId") String taskId, @RequestBody Object request, @RequestParam("userId") String userId) throws ClassNotFoundException{
+		Task task = taskService.createTaskQuery().taskId(taskId).includeProcessVariables().includeTaskLocalVariables().singleResult();
+		if(task.getAssignee().equals(userId)){
+			Object processData = task.getProcessVariables().get("data");
+			Object requestData = mapper.map(request, Class.forName("processes." + task.getProcessDefinitionId().split(":")[0] + "." + task.getName()));
+		    mapper.map(requestData, processData);
+			taskService.setVariableLocal(taskId, "data", processData);
+		} else {
+			throw new RuntimeException("Not Allowed");
+		}
+	}
 
 }
